@@ -32,17 +32,6 @@ Visualization: Power BI — designed a star-schema model and interactive UX for 
 📈 Dashboard Preview
 Figure 1: The final interactive dashboard highlighting KPIs, demographic breakdowns, and category performance.
 
-💡 Key SQL Logic Example
-To categorize customers by loyalty, I used a tiered logic based on purchase frequency:
-
-SQL
-SELECT customer_id,
-       CASE 
-           WHEN count_purchases > 10 THEN 'Loyal'
-           WHEN count_purchases BETWEEN 2 AND 10 THEN 'Returning'
-           ELSE 'New'
-       END AS loyalty_segment
-FROM sales_summary;
 🎯 Conclusion & Recommendations
 Incentivize Loyalty: Introduce a VIP tier for the 3,116 loyal customers to increase Average Order Value (AOV).
 
