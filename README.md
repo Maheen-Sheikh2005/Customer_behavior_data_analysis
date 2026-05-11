@@ -31,7 +31,10 @@ Visualization: Power BI — designed a star-schema model and interactive UX for 
 
 📈 Dashboard Preview
  The final interactive dashboard highlighting KPIs, demographic breakdowns, and category performance.
+ Dashboard image link
+ :<img width="1920" height="1080" alt="Screenshot (52)" src="https://github.com/user-attachments/assets/0e89d44b-a3a5-42a9-aabe-487e235ce379" />
 
+Pdf link:
 🎯 Conclusion & Recommendations
 Incentivize Loyalty: Introduce a VIP tier for the 3,116 loyal customers to increase Average Order Value (AOV).
 
