@@ -42,7 +42,9 @@ df['age_group'] = pd.qcut(df['age'], q=4, labels=age_labels)
 5. Database Schema PreparationConverted all string column headings to standardized, database-friendly snake_case format.
 
 Phase 2: PostgreSQL Relational AnalyticsThe pristine dataset was migrated into PostgreSQL to build customer cohorts, isolate operational windows, and track financial performance. 
+
 📊 Strategic Query Discoveries & Data Metrics
+
 Q1. Product Customer SatisfactionObjective:
 Track the top 5 highest-rated products to pinpoint market leaders.  
 Insight: Gloves secured the highest customer satisfaction score with an average review rating of 3.86, closely followed by Sandals (3.84) and Boots (3.82).
@@ -88,17 +90,29 @@ Psychological Contrast: Implemented an explicit, high-contrast conditional color
 💡 Core Analytical Visualizations & Findings
 
 1)The Subscription Deficit: Visualized that only 27% of the total user base has converted to premium subscriptions, proving that a staggering 73% remain unmonetized casual buyers.  
+
 2)Gender Spend Paradox:
+
   *Volume Component: The purchasing population is heavily male-dominated, counting 2.652k Male Buyers against 1.258k Female Buyers.
-  *Value Component: Despite lower population frequency, Female buyers maintain a higher Average Order Value (AOV) of $60.25 compared to Males at $59.54.   
+  
+  *Value Component: Despite lower population frequency, Female buyers maintain a higher Average Order Value (AOV) of $60.25 compared to Males at $59.54.
+  
   *The Retention Leak:Cross-visual filtering showed that despite their high ticket sizes, female consumers are highly unlikely to subscribe, opening up a critical      targeted marketing segment. 
-3)Category & Demographic Alpha Layers: * Built a hierarchical tree layout identifying Clothing as the absolute alpha driver of sales and revenue, while Outerwear sat at the bottom as the weakest category.  
+
+
+3)Category & Demographic Alpha Layers: * Built a hierarchical tree layout identifying Clothing as the absolute alpha driver of sales and revenue, while Outerwear sat at the bottom as the weakest category.
+
   *Layered demographic trackers confirmed that the Young Adult segment dominates volume metrics, producing the largest financial footprint across the entire operational lifecycle.  
   
 🎯 Final Actionable Business Recommendations
+
 1)Monetize the Female Spending Alpha: Because Female buyers maintain a higher individual ticket value but resist membership tiers, deploy an immediate targeted subscription sequence engineered toward female shopping categories (like Clothing).
+
 2)Target the 2,583 Pre-Warmed Shoppers: Create an automated email and push sequence targeting the 2,583 unsubscribed repeat buyers, offering them a tailored incentive to close the 73% subscription gap.  
+
 3)Optimize Channel Spend Around Young Adults: Reallocate a larger percentage of digital advertising capital into inventory lines preferred by the Young Adult age sector, optimizing ad spend where it generates the highest return on investment.
+
+
  :<img width="1920" height="1080" alt="Screenshot (52)" src="https://github.com/user-attachments/assets/0e89d44b-a3a5-42a9-aabe-487e235ce379" />
 
 
