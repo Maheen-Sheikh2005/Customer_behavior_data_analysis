@@ -1,44 +1,104 @@
-📊 Customer Behavior Analysis: Retail Insights
-An end-to-end data analysis project transforming raw retail transaction data into actionable business intelligence using Python, SQL (PostgreSQL), and Power BI.
+# End-to-End E-Commerce Customer Analytics & Pipeline
 
-🚀 Project Overview
-This project identifies key revenue drivers and customer segments for a retail dataset. By integrating data cleaning in Python with complex relational querying in SQL, I developed an interactive Power BI dashboard that uncovers demographic spending patterns and shipping efficiencies.
+## 📌 Project Business Case & Objective
+In the competitive e-commerce landscape, raw transactional data is a goldmine of untapped revenue. However, unstructured, dirty, and siloed data prevents businesses from making timely decisions. 
 
-Key Insights & Impact
-Primary Revenue Driver: Identified that Male customers contribute $157,890 (approx. 68%) of total revenue.
+**The Goal of this Project:**
+To build a complete data engineering and analytics pipeline that extracts raw e-commerce logs, cleanses and normalizes them using Python, stores them securely in a structured PostgreSQL database warehouse, and translates them into an interactive Power BI dashboard. 
 
-Retention Strength: Segmented a robust Loyal Customer base of 3,116 users, providing a foundation for targeted loyalty programs.
+By executing this project, we solve critical business challenges:
+* Identifying high-performing inventory versus markdown-dependent stock.
+* Uncovering hidden customer segments to fix leakages in the subscription pipeline.
+* Pinpointing the primary demographic groups driving overall company revenue.
 
-Demographic Focus: Discovered that Young Adults are the leading age group in sales, generating over $62,000.
+## 🐍 Phase 1: Python Preprocessing & Feature Engineering
+Before running database analytics, the raw dataset was preprocessed using **Python (Pandas)** to establish data integrity, eliminate redundancy, and normalize variables for safe calculations.
 
-Shipping Optimization: Found that Express Shipping correlates with a higher average spend ($60.48) compared to Standard ($58.46).
+### 1. Removing Redundancies & Duplicates
+* **Duplicate Elimination:** Cleaned the data canvas by identifying and removing exact row duplicates.
+* **Redundant Feature Drop:** Discovered that `discount_applied` and `promo_code_used` held perfectly identical values across the dataset. Executed a boolean check and dropped the redundant column to optimize memory size:
+  ```python
+  are_same = (df['discount_applied'] == df['promo_code_used']).all()
+  if are_same:
+      df.drop('promo_code_used', axis=1, inplace=True)
 
-🛠️ Technical Stack
-Data Cleaning: Python (Pandas, NumPy) — handled missing values using median-per-category imputation.
+  
+ 2. Category-Specific Median ImputationThe Problem: The review_rating column contained critical missing values. Applying a global average would skew individual product trends.  The Solution: Used a advanced Grouped Median Imputation. This isolates each distinct category and safely fills holes using the local median rating of only that category:  Pythondf['Review Rating'] = df.groupby('Category')['Review Rating'].transform(
+    lambda x: x.fillna(x.median())
+)
 
-Database: PostgreSQL — wrote complex CTEs, Window Functions, and CASE statements for segmentation.
 
-Visualization: Power BI — designed a star-schema model and interactive UX for executive reporting.
+3. Text-to-Numeric Frequency MappingThe Problem: The frequency of purchase was stored as qualitative words (e.g., Weekly, Fortnightly, Quarterly). You cannot mathematically compute a calendar timeline on arbitrary strings.  The Solution: Engineered a custom categorical dictionary map to transform descriptive tracking words into operational numeric value days:  Pythonfrequency_mapping = {
+    'Weekly': 7, 'Fortnightly': 14, 'Bi-Weekly': 14,
+    'Monthly': 30, 'Every 3 Months': 90, 'Quarterly': 90, 'Annually': 365
+}
+df['purchase_frequency_days'] = df['frequency_of_purchases'].map(frequency_mapping)
 
-📂 Repository Structure
-📁 Data/: Raw and cleaned datasets.
 
-📁 SQL_Queries/: .sql scripts for revenue aggregation and customer segmentation.
+4. Quantile-Based Demographic SegmentationThe Solution: Created a strict demographic classification by grouping continuous age records into categorical bins using Pandas quartile cuts (pd.qcut) to ensure balanced distribution profiles:  Pythonage_labels = ['Young Adult', 'Adult', 'Middle Aged', 'Senior']
+df['age_group'] = pd.qcut(df['age'], q=4, labels=age_labels)
 
-📁 Python_Scripts/: VS code showing the EDA and cleaning process.
 
-📁 Dashboard/: The .pbix Power BI file and PDF export.
+5. Database Schema PreparationConverted all string column headings to standardized, database-friendly snake_case format.
 
-📈 Dashboard Preview
- The final interactive dashboard highlighting KPIs, demographic breakdowns, and category performance.
- Dashboard image link
+Phase 2: PostgreSQL Relational AnalyticsThe pristine dataset was migrated into PostgreSQL to build customer cohorts, isolate operational windows, and track financial performance. 
+📊 Strategic Query Discoveries & Data Metrics
+Q1. Product Customer SatisfactionObjective:
+Track the top 5 highest-rated products to pinpoint market leaders.  
+Insight: Gloves secured the highest customer satisfaction score with an average review rating of 3.86, closely followed by Sandals (3.84) and Boots (3.82).
+
+Q2. Logistics & Basket-Value MechanicsObjective: 
+Evaluate if shipping delivery options impact overall order thresholds.  
+Insight: Premium delivery speeds directly correlate with larger purchases; orders utilizing Express Shipping average 60.48 per basket, compared to Standard Shipping at 58.46. 
+
+Q3. Subscription Program ROIObjective: 
+Validate the fiscal value generated by subscribed premium profiles.  
+Insight: While non-subscribers capture higher total gross sales volume due to sheer cohort size, premium members exhibit far better unit loyalty, spending a higher average of 59.49 per purchase.  
+
+Q4. Inventory Promotion DependencyObjective: 
+Track items reliant on promotional sales to prevent margin erosion.  
+Insight: Hats carry the highest markdown dependency with a 50.00% discount-to-purchase conversion rate, with Sneakers and Coats tracking closely at 49.00%. 
+
+Q5. Multi-Tier Behavioral Segmentation ModelObjective:
+Categorize the consumer base using conditional CASE WHEN logic based on purchase loyalty.  
+Insight: Successfully segmented the active base into an incredibly strong core of 3,116 Loyal Customers (10+ purchases), 701 Returning users, and 83 brand-new customers. 
+
+Q6. Categorical Deep-Dive WindowingObjective: 
+Isolate the top 3 high-volume products within every standalone business category.  
+Insight: Utilized analytical window ranking functions (ROW_NUMBER() OVER (PARTITION BY category ORDER BY COUNT(*) DESC)) to isolate trends, proving Jewelry (171 sales) is the dominant driver within the Accessories department.
+
+Q7. Subscription Pipeline Optimization GapObjective:
+Audit whether frequent, highly engaged shoppers are converting to paid memberships. 
+Insight: Uncovered a massive revenue leak: 2,583 high-frequency repeat buyers (5+ purchases) remain completely unsubscribed, establishing a massive, pre-warmed conversion opportunity. 
+
+Q8. Demographic Revenue FootprintObjective: 
+Attribute aggregate sales value directly to consumer age buckets.  
+Insight: The Young Adult demographic serves as the company's financial backbone, generating 62,143 in sales, with Middle-Aged shoppers trailing right behind at 59,197
+
+Phase 3: Power BI Interactive Executive Dashboard
+
+To empower executive leadership with real-time decision-making, the structured PostgreSQL warehouse data was modeled and visualized within Power BI Desktop.
+
+🎨 Strategic Visual Design & Color Theory
+
+Psychological Contrast: Implemented an explicit, high-contrast conditional color schema focusing heavily on subscription conversion gaps.
+🔴 Crimson Red was intentionally mapped to Unsubscribed Buyers to highlight immediate business risks and loss areas.  
+🟢 Forest Green was applied to Premium Subscribers to indicate healthy retention value metrics. 
+
+💡 Core Analytical Visualizations & Findings
+
+1)The Subscription Deficit: Visualized that only 27% of the total user base has converted to premium subscriptions, proving that a staggering 73% remain unmonetized casual buyers.  
+2)Gender Spend Paradox:
+  *Volume Component: The purchasing population is heavily male-dominated, counting 2.652k Male Buyers against 1.258k Female Buyers.
+  *Value Component: Despite lower population frequency, Female buyers maintain a higher Average Order Value (AOV) of $60.25 compared to Males at $59.54.   
+  *The Retention Leak:Cross-visual filtering showed that despite their high ticket sizes, female consumers are highly unlikely to subscribe, opening up a critical      targeted marketing segment. 
+3)Category & Demographic Alpha Layers: * Built a hierarchical tree layout identifying Clothing as the absolute alpha driver of sales and revenue, while Outerwear sat at the bottom as the weakest category.  
+  *Layered demographic trackers confirmed that the Young Adult segment dominates volume metrics, producing the largest financial footprint across the entire operational lifecycle.  
+  
+🎯 Final Actionable Business Recommendations
+1)Monetize the Female Spending Alpha: Because Female buyers maintain a higher individual ticket value but resist membership tiers, deploy an immediate targeted subscription sequence engineered toward female shopping categories (like Clothing).
+2)Target the 2,583 Pre-Warmed Shoppers: Create an automated email and push sequence targeting the 2,583 unsubscribed repeat buyers, offering them a tailored incentive to close the 73% subscription gap.  
+3)Optimize Channel Spend Around Young Adults: Reallocate a larger percentage of digital advertising capital into inventory lines preferred by the Young Adult age sector, optimizing ad spend where it generates the highest return on investment.
  :<img width="1920" height="1080" alt="Screenshot (52)" src="https://github.com/user-attachments/assets/0e89d44b-a3a5-42a9-aabe-487e235ce379" />
 
-Pdf link:https://github.com/Maheen-Sheikh2005/Customer_behavior_data_analysis/blob/main/Customer%20Behavior%20Analysis.pdf
 
-🎯 Conclusion & Recommendations
-Incentivize Loyalty: Introduce a VIP tier for the 3,116 loyal customers to increase Average Order Value (AOV).
-
-Targeted Ads: Focus digital marketing spend on the Young Adult segment.
-
-Shipping Perks: Offer free Express shipping for orders over $75 to capitalize on high-spend behavior.
