@@ -46,8 +46,8 @@ print(df.columns)
 from sqlalchemy import create_engine
 
 # 1. THE SHORTCUT: Set your details here once
-USER = "postgres"
-PASS = "kausar2116"  
+USER = "-----"
+PASS = "-----"  
 HOST = "localhost"
 PORT = "5432"
 DB_NAME = "Customer_behaviour"
